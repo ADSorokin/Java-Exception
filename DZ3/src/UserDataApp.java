@@ -25,6 +25,8 @@
  * быть корректно обработано, пользователь должен увидеть стектрейс ошибки.
  * */
 
+
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
         import java.io.IOException;
@@ -62,7 +64,13 @@ public class UserDataApp {
             Long phoneNumberValid = validatePhoneNumberAndFormat(phoneNumber);
             char genderValid = validateGenderAndFormat(gender);
 
-            writeToFile(lastNameValid, String.format("%s %s %s %s %d %c", lastNameValid, firstNameValid, middleNameValid, birthDateValid, phoneNumberValid, genderValid));
+            writeToFile(lastNameValid, String.format("%s %s %s %s %d %c", lastNameValid,
+                    firstNameValid, middleNameValid, birthDateValid, phoneNumberValid, genderValid));
+
+        } catch (IOException ex) {
+            System.err.println("Ошибка при записи в файл: " + ex.getMessage());
+            ex.printStackTrace();
+
 
         } catch (Exception e) {
             System.err.println("Ошибка: " + e.getMessage());
@@ -72,24 +80,26 @@ public class UserDataApp {
             scanner.close();
 
         }
-    }
 
+    }
     private static String validateName(String name) throws IllegalArgumentException {
         if (!Pattern.compile("^[А-Я][а-я]*$").matcher(name).matches()) {
-            throw new IllegalArgumentException("Ошибка: Неверный формат ввода ФИО. Требуется Русский алфавит без букв знаков и цифр первая буква заглавная");
+            throw new IllegalArgumentException("Ошибка: Неверный формат ввода ФИО. " +
+                    "Требуется Русский алфавит без букв знаков и цифр первая буква заглавная");
         }
         return name;
     }
 
-    private static LocalDate validateDataAndConvertToFormat(String birthDate) throws IllegalArgumentException, DateTimeParseException {
+    private static LocalDate validateDataAndConvertToFormat(String birthDate) throws IllegalArgumentException,
+            DateTimeParseException {
         if (!Pattern.compile("\\d{2}\\.\\d{2}\\.\\d{4}").matcher(birthDate).matches()) {
             throw new IllegalArgumentException("Ошибка: неверный формат даты рождения. Требуется формат dd.mm.yyyy.");
         }
         return LocalDate.parse(birthDate, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
     }
 
-    private static Long validatePhoneNumberAndFormat(String phoneNumber) throws IllegalArgumentException {
-        if (!Pattern.compile("\\+?\\d+([$$\\s\\-]?\\d+[$$\\s\\-]?[\\d\\s\\-]+)?").matcher(phoneNumber).matches()) {
+    private static  Long validatePhoneNumberAndFormat(String phoneNumber) throws IllegalArgumentException {
+        if (!Pattern.compile("\\+?\\d+([$\\s\\-]?\\d+[$\\s\\-]?[\\d\\s\\-]+)?").matcher(phoneNumber).matches()) {
             throw new IllegalArgumentException("Ошибка: неверный формат номера телефона.");
         }
         return Long.parseUnsignedLong(phoneNumber.replaceAll("[^0-9]", ""));
@@ -102,14 +112,11 @@ public class UserDataApp {
         return gender.toLowerCase().charAt(0);
     }
 
-    private static void writeToFile(String name, String data) {
+    private static void writeToFile(String name, String data) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(name + ".txt", true))) {
             writer.write(data + System.lineSeparator());
             writer.flush();
 
-        } catch (IOException ex) {
-            System.err.println("Ошибка при записи в файл: " + ex.getMessage());
-            ex.printStackTrace();
         }
 
 
