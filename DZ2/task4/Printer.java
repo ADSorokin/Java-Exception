@@ -2,20 +2,20 @@ package task4;
 
 import java.util.Arrays;
 class Statistics {
-    public static double findAverage(int[] array) {
+    public static double findAverage(int[] numbers) {
         try {
-            if (array == null || array.length == 0) {
-                System.out.println("Array is empty or null. Cannot compute average.");
+            if (numbers == null || numbers.length == 0) {
+                System.out.println("Массив не определен или полон.");
                 return Double.NaN;
             }
             double sum = 0;
-            for (int num : array) {
-                sum += num;
+            for (int n : numbers) {
+                sum += n;
             }
-            return sum / array.length;
+            return sum / numbers.length;
         } catch (Exception e) {
 
-            System.out.println("An error occurred while computing the average.");
+            System.out.println("Ошибка вычисления ср арифмитического.");
             return Double.NaN;
         }
     }
@@ -26,7 +26,7 @@ public class Printer {
         if (args.length > 0) {
             array = Arrays.stream(args[0].split(" ")).mapToInt(Integer::parseInt).toArray();
         } else {
-            array = new int[]{10, 20, 30, 40, 50}; // �������� �����������
+            array = new int[]{10, 20, 30, 40, 50}; // Значение поумолчанию
         }
         double average = Statistics.findAverage(array);
         System.out.println(average);
